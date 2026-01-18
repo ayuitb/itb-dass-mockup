@@ -1,0 +1,1441 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portal Kesejahteraan Mahasiswa (Mockup)</title>
+  <style>
+    :root{
+      /* Minimal “portal kampus” ala ITB: putih + biru utama */
+      --primary: #003C7A;          /* ITB-ish deep blue */
+      --primary-2: #0B57D0;        /* accent */
+      --bg: #F6F8FB;
+      --surface: #FFFFFF;
+      --text: #0F172A;
+      --muted: #64748B;
+      --border: #E6EAF0;
+      --success: #0F9D58;
+      --warn: #F59E0B;
+      --danger: #DC2626;
+
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(2, 8, 23, 0.08);
+      --shadow-soft: 0 6px 18px rgba(2, 8, 23, 0.06);
+
+      --space-1: 8px;
+      --space-2: 12px;
+      --space-3: 16px;
+      --space-4: 24px;
+      --space-5: 32px;
+      --space-6: 48px;
+
+      --maxw: 1120px;
+      --cardw: 860px;
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{ height: 100%; }
+    body{
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    /* Top bar */
+    .topbar{
+      height: 64px;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 var(--space-4);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 0 rgba(255,255,255,0.08);
+    }
+    .topbar-inner{
+      width: 100%;
+      max-width: var(--maxw);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+    .brand{
+      display:flex; align-items:center; gap: 12px; min-width: 280px;
+    }
+    .logo{
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.18);
+      display: grid; place-items: center;
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+    .brand-title{
+      display:flex; flex-direction: column;
+      line-height: 1.1;
+    }
+    .brand-title .h{
+      font-weight: 650; font-size: 14px;
+    }
+    .brand-title .s{
+      opacity: .85; font-size: 12px;
+    }
+
+    .stepper{
+      display:flex; gap: 10px; align-items:center;
+      flex: 1;
+      overflow:auto;
+      padding-bottom: 2px;
+    }
+    .step{
+      display:flex; align-items:center; gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      white-space: nowrap;
+      font-size: 12px;
+      opacity: .85;
+    }
+    .step .dot{
+      width: 8px; height: 8px; border-radius: 999px;
+      background: rgba(255,255,255,0.55);
+    }
+    .step.active{
+      background: rgba(255,255,255,0.22);
+      opacity: 1;
+    }
+    .step.active .dot{ background: #fff; }
+    .step.done{ opacity: 1; background: rgba(16,185,129,0.18); }
+    .step.done .dot{ background: #34D399; }
+
+    .userbox{
+      display:flex; align-items:center; gap: 10px;
+      min-width: 180px;
+      justify-content: flex-end;
+    }
+    .pill{
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.22);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+    .linkbtn{
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .linkbtn:hover{ background: rgba(255,255,255,0.08); }
+
+    /* Layout */
+    main{
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: var(--space-6) var(--space-4);
+      display:flex;
+      justify-content: center;
+    }
+
+    .card{
+      width: 100%;
+      max-width: var(--cardw);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card-header{
+      padding: var(--space-5);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #ffffff 0%, #ffffff 60%, #fbfcfe 100%);
+    }
+    .card-header h1{
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.2px;
+    }
+    .sub{
+      margin: 8px 0 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .card-body{ padding: var(--space-5); }
+    .card-footer{
+      padding: var(--space-4) var(--space-5);
+      border-top: 1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      background: #fbfcff;
+    }
+
+    /* Buttons */
+    .btn{
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      user-select: none;
+    }
+    .btn-primary{
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover{ filter: brightness(1.06); }
+    .btn-secondary{
+      background: #fff;
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover{ background: #f8fafc; }
+    .btn-danger{
+      background: #fff;
+      border-color: rgba(220,38,38,.35);
+      color: var(--danger);
+    }
+    .btn-danger:hover{ background: rgba(220,38,38,.06); }
+    .btn-ghost{
+      background: transparent;
+      border-color: transparent;
+      color: var(--muted);
+      padding: 10px 10px;
+    }
+    .btn-ghost:hover{ background: #f1f5f9; color: var(--text); }
+    .btn-full{ width: 100%; }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+      background: #fff;
+    }
+    .badge.ok{ border-color: rgba(16,185,129,.3); color: #065F46; background: rgba(16,185,129,.08); }
+    .badge.warn{ border-color: rgba(245,158,11,.3); color: #92400E; background: rgba(245,158,11,.10); }
+
+    /* Sections */
+    .screen{ display:none; }
+    .screen.active{ display:block; }
+
+    /* Form blocks */
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+    @media (max-width: 860px){
+      main{ padding: var(--space-4) var(--space-3); }
+      .card-header, .card-body{ padding: var(--space-4); }
+      .card-footer{ padding: var(--space-3) var(--space-4); }
+      .grid{ grid-template-columns: 1fr; }
+      .brand{ min-width: auto; }
+      .userbox{ display:none; }
+    }
+
+    .info{
+      display:flex;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fbfcff;
+      align-items: flex-start;
+    }
+    .info .ic{
+      width: 36px; height: 36px;
+      border-radius: 12px;
+      display:grid; place-items:center;
+      background: rgba(11,87,208,.10);
+      color: var(--primary-2);
+      font-weight: 800;
+    }
+    .info .t{
+      font-size: 14px; line-height: 1.6;
+      color: var(--text);
+    }
+    .muted{ color: var(--muted); }
+
+    .checkrow{
+      display:flex;
+      gap: 12px;
+      align-items:flex-start;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+    }
+    .checkrow input{ margin-top: 3px; }
+    .checkrow label{ font-size: 14px; line-height: 1.5; }
+
+    .alert{
+      border: 1px solid rgba(245,158,11,.35);
+      background: rgba(245,158,11,.10);
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: #92400E;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* DASS */
+    .dass-wrap{
+      display:grid;
+      grid-template-columns: 240px 1fr;
+      gap: var(--space-4);
+      align-items: start;
+    }
+    @media (max-width: 860px){
+      .dass-wrap{ grid-template-columns: 1fr; }
+    }
+    .sidebar{
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fff;
+      padding: var(--space-3);
+      box-shadow: var(--shadow-soft);
+    }
+    .sidebar h3{
+      margin: 0 0 10px 0;
+      font-size: 14px;
+    }
+    .qchips{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip{
+      width: 34px; height: 34px;
+      border-radius: 12px;
+      display:grid; place-items:center;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: #fff;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .chip.filled{
+      border-color: rgba(16,185,129,.35);
+      background: rgba(16,185,129,.10);
+      color: #065F46;
+      font-weight: 700;
+    }
+    .chip.current{
+      outline: 2px solid rgba(11,87,208,.35);
+      outline-offset: 2px;
+    }
+
+    .qcard{
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fff;
+      padding: var(--space-4);
+      box-shadow: var(--shadow-soft);
+    }
+    .qmeta{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .qmeta .title{
+      font-weight: 650;
+      font-size: 14px;
+    }
+    .qtext{
+      margin: 0 0 16px 0;
+      font-size: 18px;
+      letter-spacing: -0.2px;
+      line-height: 1.35;
+    }
+    .scale{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 560px){
+      .scale{ grid-template-columns: 1fr; }
+    }
+    .opt{
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 12px;
+      display:flex;
+      align-items:flex-start;
+      gap: 10px;
+      cursor: pointer;
+      background: #fff;
+      transition: transform .05s ease, border-color .15s ease;
+      min-height: 48px;
+    }
+    .opt:hover{
+      border-color: rgba(11,87,208,.35);
+      transform: translateY(-1px);
+    }
+    .opt input{ margin-top: 2px; }
+    .opt .lbl{
+      display:flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .opt .lbl b{ font-size: 13px; }
+    .opt .lbl span{ font-size: 12px; color: var(--muted); }
+    .autosave{
+      margin-top: 14px;
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* Voice-first */
+    .voice-question{
+      font-size: 18px;
+      margin: 0 0 14px 0;
+      line-height: 1.35;
+      letter-spacing: -0.2px;
+    }
+    .voice-panel{
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: var(--space-4);
+      background: #fff;
+      box-shadow: var(--shadow-soft);
+    }
+    .voice-top{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: var(--space-3);
+    }
+    .voice-top .cap{
+      font-weight: 650;
+      font-size: 14px;
+    }
+    .voice-top .limit{
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .rec-area{
+      display:grid;
+      grid-template-columns: 1fr 220px;
+      gap: var(--space-4);
+      align-items: center;
+    }
+    @media (max-width: 860px){
+      .rec-area{ grid-template-columns: 1fr; }
+    }
+
+    .wave{
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      padding: var(--space-4);
+      min-height: 120px;
+      display:flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+      background: #fbfcff;
+    }
+    .wave .timer{
+      font-size: 34px;
+      font-weight: 750;
+      letter-spacing: -0.8px;
+    }
+    .wave .state{
+      font-size: 13px;
+      color: var(--muted);
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .pulse{
+      width: 10px; height: 10px; border-radius: 999px;
+      background: rgba(100,116,139,.5);
+    }
+    .pulse.recording{
+      background: rgba(220,38,38,.85);
+      box-shadow: 0 0 0 6px rgba(220,38,38,.12);
+      animation: pul 1.2s infinite ease-in-out;
+    }
+    @keyframes pul{
+      0%,100%{ transform: scale(1); }
+      50%{ transform: scale(1.15); }
+    }
+
+    .rec-cta{
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: var(--space-4);
+      display:flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #fff;
+    }
+    .rec-btn{
+      width: 100%;
+      height: 56px;
+      border-radius: 18px;
+      border: 1px solid transparent;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      font-weight: 750;
+      cursor:pointer;
+      background: rgba(11,87,208,.10);
+      color: var(--primary-2);
+      transition: filter .15s ease;
+    }
+    .rec-btn:hover{ filter: brightness(1.03); }
+    .rec-btn.recording{
+      background: rgba(220,38,38,.10);
+      color: var(--danger);
+    }
+    .hint{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .playback{
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--border);
+      display:none;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .playback.active{ display:flex; }
+    audio{ width: min(520px, 100%); }
+    .row-actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .toggle{
+      margin-top: var(--space-4);
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .textarea{
+      margin-top: 12px;
+      display:none;
+    }
+    .textarea.active{ display:block; }
+    textarea{
+      width: 100%;
+      min-height: 120px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+      line-height: 1.6;
+      outline: none;
+    }
+    textarea:focus{
+      border-color: rgba(11,87,208,.35);
+      box-shadow: 0 0 0 4px rgba(11,87,208,.10);
+    }
+
+    /* Review */
+    .section{
+      padding: var(--space-4);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: var(--shadow-soft);
+    }
+    .section h3{ margin: 0 0 12px 0; font-size: 14px; }
+    .list{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .item{
+      display:flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+    }
+    .item .left{
+      display:flex; flex-direction: column; gap: 2px;
+    }
+    .item .left b{ font-size: 13px; }
+    .item .left span{ font-size: 12px; color: var(--muted); }
+    .mini{
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: 12px;
+    }
+
+    /* Utility */
+    .spacer{ height: 14px; }
+    .hidden{ display:none !important; }
+    .right{ margin-left: auto; }
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 11px;
+      padding: 2px 6px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      background: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="logo">ITB</div>
+        <div class="brand-title">
+          <div class="h">Portal Kesejahteraan Mahasiswa</div>
+          <div class="s">Kuesioner DASS-21 + Refleksi Suara (Mockup)</div>
+        </div>
+      </div>
+
+      <div class="stepper" aria-label="Progress langkah">
+        <div class="step active" data-step="login"><span class="dot"></span>Login</div>
+        <div class="step" data-step="consent"><span class="dot"></span>Persetujuan</div>
+        <div class="step" data-step="dass"><span class="dot"></span>DASS-21</div>
+        <div class="step" data-step="voice"><span class="dot"></span>Refleksi Suara</div>
+        <div class="step" data-step="review"><span class="dot"></span>Review</div>
+        <div class="step" data-step="done"><span class="dot"></span>Selesai</div>
+      </div>
+
+      <div class="userbox">
+        <div class="pill">Mahasiswa • 135xxxx</div>
+        <button class="linkbtn" type="button" id="btnLogout">Keluar</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="card" role="application" aria-label="Portal Kuesioner">
+
+      <!-- LOGIN -->
+      <section class="screen active" id="screen-login" aria-label="Login">
+        <div class="card-header">
+          <h1>Mulai Kuesioner Kesejahteraan</h1>
+          <p class="sub">
+            Perkiraan waktu <b>± 10 menit</b>. Jawaban bersifat rahasia dan digunakan untuk dukungan layanan kampus.
+          </p>
+        </div>
+        <div class="card-body">
+          <div class="grid">
+            <div class="info">
+              <div class="ic">i</div>
+              <div class="t">
+                <b>Catatan penting</b><br/>
+                Ini adalah <b>screening</b>, bukan diagnosis klinis. Jika Anda merasa dalam kondisi darurat, segera hubungi layanan bantuan.
+              </div>
+            </div>
+            <div class="info">
+              <div class="ic">🔒</div>
+              <div class="t">
+                <b>Privasi</b><br/>
+                Data ditangani sesuai kebijakan kampus dan hanya dapat diakses pihak berwenang.
+              </div>
+            </div>
+          </div>
+
+          <div class="spacer"></div>
+
+          <button class="btn btn-primary btn-full" id="btnSSO" type="button">
+            Masuk dengan SSO ITB
+          </button>
+          <div class="spacer"></div>
+          <button class="btn btn-ghost btn-full" id="btnAltLogin" type="button">
+            Tidak bisa akses SSO?
+          </button>
+
+          <div class="spacer"></div>
+          <p class="muted" style="margin:0;font-size:12px;line-height:1.5;">
+            Dengan masuk, Anda menyetujui kebijakan privasi. Anda dapat berhenti kapan saja sebelum mengirim jawaban.
+          </p>
+        </div>
+        <div class="card-footer">
+          <span class="badge">Tips: gunakan headset • tempat tenang</span>
+          <span class="muted" style="font-size:12px;">Shortcut: <span class="kbd">Alt</span> + <span class="kbd">→</span> untuk lanjut</span>
+        </div>
+      </section>
+
+      <!-- CONSENT -->
+      <section class="screen" id="screen-consent" aria-label="Persetujuan">
+        <div class="card-header">
+          <h1>Persetujuan Partisipasi</h1>
+          <p class="sub">Mohon baca ringkasan berikut sebelum memulai.</p>
+        </div>
+        <div class="card-body">
+          <div class="grid">
+            <div class="info">
+              <div class="ic">✓</div>
+              <div class="t"><b>Tujuan</b><br/>Membantu kampus memahami kondisi mahasiswa dan menyediakan dukungan yang tepat.</div>
+            </div>
+            <div class="info">
+              <div class="ic">🩺</div>
+              <div class="t"><b>Bukan diagnosis</b><br/>Hasil kuesioner bukan penetapan gangguan klinis, melainkan indikasi awal.</div>
+            </div>
+            <div class="info">
+              <div class="ic">🔐</div>
+              <div class="t"><b>Kerahasiaan</b><br/>Jawaban disimpan aman dan hanya petugas berwenang yang dapat mengakses.</div>
+            </div>
+            <div class="info">
+              <div class="ic">⏸</div>
+              <div class="t"><b>Kontrol Anda</b><br/>Anda dapat berhenti kapan saja sebelum submit. Rekaman suara bisa dihapus sebelum dikirim.</div>
+            </div>
+          </div>
+
+          <div class="spacer"></div>
+
+          <div class="alert">
+            Jika Anda merasa tidak aman atau ingin bantuan segera, hubungi layanan bantuan kampus / hotline yang tersedia.
+          </div>
+
+          <div class="spacer"></div>
+
+          <div class="checkrow">
+            <input type="checkbox" id="c1">
+            <label for="c1">Saya memahami bahwa ini <b>bukan diagnosis klinis</b>.</label>
+          </div>
+          <div class="spacer"></div>
+          <div class="checkrow">
+            <input type="checkbox" id="c2">
+            <label for="c2">Saya setuju data saya digunakan untuk <b>dukungan layanan kampus</b> sesuai kebijakan privasi.</label>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-secondary" type="button" data-prev="login">Kembali</button>
+          <button class="btn btn-primary" type="button" id="btnConsentNext" disabled>Lanjut</button>
+        </div>
+      </section>
+
+      <!-- DASS -->
+      <section class="screen" id="screen-dass" aria-label="DASS-21">
+        <div class="card-header">
+          <h1>DASS-21</h1>
+          <p class="sub">Pilih jawaban berdasarkan <b>7 hari terakhir</b>. Skala 0–3.</p>
+        </div>
+        <div class="card-body">
+          <div class="dass-wrap">
+            <aside class="sidebar">
+              <h3>Progres</h3>
+              <div class="badge" id="dassProgress">0/21 terisi</div>
+              <div class="spacer"></div>
+              <div class="qchips" id="qchips" aria-label="Daftar pertanyaan">
+                <!-- 21 chips injected by JS -->
+              </div>
+              <div class="spacer"></div>
+              <p class="muted" style="margin:0;font-size:12px;line-height:1.5;">
+                Klik nomor untuk lompat. (Mockup: teks item DASS di sini hanya contoh.)
+              </p>
+            </aside>
+
+            <div class="qcard" aria-live="polite">
+              <div class="qmeta">
+                <div class="title" id="qTitle">Pertanyaan 1</div>
+                <span class="badge" id="qAutoSave">Tersimpan otomatis</span>
+              </div>
+
+              <p class="qtext" id="qText">
+                Saya merasa sulit untuk menenangkan diri.
+              </p>
+
+              <div class="scale" id="scale">
+                <label class="opt">
+                  <input type="radio" name="dass" value="0" />
+                  <div class="lbl"><b>0</b><span>Tidak pernah</span></div>
+                </label>
+                <label class="opt">
+                  <input type="radio" name="dass" value="1" />
+                  <div class="lbl"><b>1</b><span>Kadang-kadang</span></div>
+                </label>
+                <label class="opt">
+                  <input type="radio" name="dass" value="2" />
+                  <div class="lbl"><b>2</b><span>Sering</span></div>
+                </label>
+                <label class="opt">
+                  <input type="radio" name="dass" value="3" />
+                  <div class="lbl"><b>3</b><span>Hampir selalu</span></div>
+                </label>
+              </div>
+
+              <div class="autosave">
+                <span id="dassHint">Pilih salah satu jawaban.</span>
+                <span>Terakhir tersimpan: <span id="savedAt">—</span></span>
+              </div>
+
+              <div class="spacer"></div>
+
+              <div style="display:flex; gap:10px; justify-content:space-between; flex-wrap:wrap;">
+                <button class="btn btn-secondary" type="button" id="btnDassPrev">Sebelumnya</button>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  <button class="btn btn-ghost" type="button" id="btnDassSkip">Lewati</button>
+                  <button class="btn btn-primary" type="button" id="btnDassNext">Berikutnya</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <span class="badge">Tip: isi lengkap untuk hasil screening lebih baik</span>
+          <button class="btn btn-primary" type="button" id="btnGoVoice">Lanjut ke Refleksi Suara</button>
+        </div>
+      </section>
+
+      <!-- VOICE -->
+      <section class="screen" id="screen-voice" aria-label="Refleksi Suara">
+        <div class="card-header">
+          <h1>Refleksi Singkat (Suara disarankan)</h1>
+          <p class="sub">Jawaban suara lebih utama. Anda bisa merekam ulang sebelum mengirim.</p>
+        </div>
+
+        <div class="card-body">
+          <div class="badge" id="voiceProgress">1/3</div>
+          <div class="spacer"></div>
+
+          <p class="voice-question" id="voiceQ">
+            Ceritakan hal yang paling mengganggu pikiran Anda akhir-akhir ini.
+          </p>
+
+          <div class="voice-panel">
+            <div class="voice-top">
+              <div class="cap">Rekaman Suara</div>
+              <div class="limit">Durasi maks: 02:00</div>
+            </div>
+
+            <div class="rec-area">
+              <div class="wave" aria-label="Status rekaman">
+                <div class="timer" id="timer">00:00</div>
+                <div class="state">
+                  <span class="pulse" id="pulse"></span>
+                  <span id="recState">Siap merekam</span>
+                </div>
+                <div class="muted" style="font-size:12px;line-height:1.5;">
+                  Pastikan izin mikrofon diberikan. Rekaman tersimpan sebagai draft lokal (mockup).
+                </div>
+              </div>
+
+              <div class="rec-cta">
+                <button class="rec-btn" type="button" id="btnRec">
+                  ● Rekam
+                </button>
+                <div class="hint">
+                  <b>Voice-first.</b> Jika mikrofon tidak tersedia, Anda tetap bisa mengetik jawaban sebagai alternatif.
+                </div>
+                <button class="btn btn-secondary" type="button" id="btnCheckMic">Cek Izin Mikrofon</button>
+              </div>
+            </div>
+
+            <div class="playback" id="playbackRow" aria-label="Playback rekaman">
+              <audio id="audio" controls></audio>
+              <div class="row-actions">
+                <button class="btn btn-secondary mini" type="button" id="btnReRecord">Rekam ulang</button>
+                <button class="btn btn-danger mini" type="button" id="btnDeleteAudio">Hapus</button>
+              </div>
+            </div>
+
+            <div class="toggle">
+              <input type="checkbox" id="toggleText" />
+              <label for="toggleText">Saya ingin mengetik jawaban (opsional)</label>
+            </div>
+            <div class="textarea" id="textAreaWrap">
+              <textarea id="voiceText" placeholder="(Opsional) Tulis jawaban jika tidak bisa rekam suara..."></textarea>
+            </div>
+          </div>
+
+          <div class="spacer"></div>
+
+          <div style="display:flex; gap:10px; justify-content:space-between; flex-wrap:wrap;">
+            <button class="btn btn-secondary" type="button" id="btnVoicePrev">Sebelumnya</button>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn btn-ghost" type="button" id="btnVoiceSkip">Lewati</button>
+              <button class="btn btn-primary" type="button" id="btnVoiceNext">Berikutnya</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <span class="badge">🔒 Terenkripsi • hanya petugas berwenang</span>
+          <button class="btn btn-primary" type="button" id="btnGoReview">Lanjut ke Review</button>
+        </div>
+      </section>
+
+      <!-- REVIEW -->
+      <section class="screen" id="screen-review" aria-label="Review">
+        <div class="card-header">
+          <h1>Tinjau Jawaban</h1>
+          <p class="sub">Periksa kelengkapan sebelum mengirim.</p>
+        </div>
+
+        <div class="card-body">
+          <div class="section">
+            <h3>DASS-21</h3>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <span class="badge" id="reviewDassBadge">—</span>
+              <button class="btn btn-ghost" type="button" id="btnEditDass">Ubah</button>
+            </div>
+          </div>
+
+          <div class="spacer"></div>
+
+          <div class="section">
+            <h3>Refleksi Suara</h3>
+            <div class="list" id="reviewVoiceList"></div>
+          </div>
+
+          <div class="spacer"></div>
+
+          <div class="checkrow">
+            <input type="checkbox" id="finalCheck">
+            <label for="finalCheck">Saya siap mengirim jawaban ini.</label>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <button class="btn btn-secondary" type="button" data-prev="voice">Kembali</button>
+          <button class="btn btn-primary" type="button" id="btnSubmit" disabled>Kirim Kuesioner</button>
+        </div>
+      </section>
+
+      <!-- DONE -->
+      <section class="screen" id="screen-done" aria-label="Selesai">
+        <div class="card-header">
+          <h1>Terima kasih</h1>
+          <p class="sub">Respons Anda sudah terkirim (mockup).</p>
+        </div>
+        <div class="card-body">
+          <div class="info">
+            <div class="ic">✓</div>
+            <div class="t">
+              <b>Konfirmasi</b><br/>
+              Jika Anda ingin berbicara dengan konselor, silakan hubungi layanan dukungan kampus.
+            </div>
+          </div>
+
+          <div class="spacer"></div>
+
+          <div class="alert">
+            Jika Anda merasa dalam situasi darurat, segera hubungi layanan darurat terdekat.
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-secondary" type="button" id="btnBackHome">Kembali ke Beranda</button>
+          <button class="btn btn-primary" type="button" id="btnDownload">Unduh Bukti (opsional)</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    /* ==========
+      Navigation
+    ========== */
+    const screens = {
+      login: document.getElementById('screen-login'),
+      consent: document.getElementById('screen-consent'),
+      dass: document.getElementById('screen-dass'),
+      voice: document.getElementById('screen-voice'),
+      review: document.getElementById('screen-review'),
+      done: document.getElementById('screen-done'),
+    };
+
+    const steps = Array.from(document.querySelectorAll('.step'));
+    let currentScreen = 'login';
+
+    function setScreen(name){
+      Object.values(screens).forEach(el => el.classList.remove('active'));
+      screens[name].classList.add('active');
+      currentScreen = name;
+
+      steps.forEach(s => s.classList.remove('active'));
+      const st = steps.find(x => x.dataset.step === name);
+      if (st) st.classList.add('active');
+
+      // mark done steps
+      const order = ['login','consent','dass','voice','review','done'];
+      const idx = order.indexOf(name);
+      steps.forEach(s => {
+        const si = order.indexOf(s.dataset.step);
+        s.classList.toggle('done', si >= 0 && si < idx);
+      });
+
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    document.querySelectorAll('[data-prev]').forEach(btn=>{
+      btn.addEventListener('click', () => setScreen(btn.dataset.prev));
+    });
+
+    // quick keyboard
+    window.addEventListener('keydown', (e)=>{
+      if (e.altKey && e.key === 'ArrowRight'){
+        if (currentScreen === 'login') setScreen('consent');
+      }
+    });
+
+    // fake login
+    document.getElementById('btnSSO').addEventListener('click', ()=> setScreen('consent'));
+    document.getElementById('btnAltLogin').addEventListener('click', ()=> alert('Mockup: alur bantuan login.'));
+
+    document.getElementById('btnLogout').addEventListener('click', ()=> {
+      alert('Mockup: logout');
+      setScreen('login');
+    });
+
+    /* ==========
+      Consent gating
+    ========== */
+    const c1 = document.getElementById('c1');
+    const c2 = document.getElementById('c2');
+    const btnConsentNext = document.getElementById('btnConsentNext');
+
+    function syncConsent(){
+      btnConsentNext.disabled = !(c1.checked && c2.checked);
+    }
+    c1.addEventListener('change', syncConsent);
+    c2.addEventListener('change', syncConsent);
+    btnConsentNext.addEventListener('click', ()=> setScreen('dass'));
+
+    /* ==========
+      DASS mock (21 items; here we show sample text)
+    ========== */
+    const dassItems = Array.from({length: 21}).map((_,i)=>({
+      id: i+1,
+      text: [
+        "Saya merasa sulit untuk menenangkan diri.",
+        "Saya merasa mulut saya kering.",
+        "Saya tidak bisa merasakan perasaan positif sama sekali.",
+        "Saya mengalami kesulitan bernapas (mis. napas cepat, sesak).",
+        "Saya merasa sulit untuk memulai sesuatu.",
+        "Saya cenderung bereaksi berlebihan terhadap situasi.",
+      ][i % 6] + " (contoh item)"
+    }));
+
+    const dassAnswers = new Array(21).fill(null);
+    let qIndex = 0;
+
+    const qchips = document.getElementById('qchips');
+    const qTitle = document.getElementById('qTitle');
+    const qText = document.getElementById('qText');
+    const dassProgress = document.getElementById('dassProgress');
+    const savedAt = document.getElementById('savedAt');
+    const dassHint = document.getElementById('dassHint');
+    const radioName = 'dass';
+
+    function renderChips(){
+      qchips.innerHTML = '';
+      dassItems.forEach((q, idx)=>{
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'chip' +
+          (dassAnswers[idx] !== null ? ' filled' : '') +
+          (idx === qIndex ? ' current' : '');
+        b.textContent = q.id;
+        b.addEventListener('click', ()=> { qIndex = idx; renderQuestion(); });
+        qchips.appendChild(b);
+      });
+    }
+
+    function updateDassProgress(){
+      const filled = dassAnswers.filter(v=> v !== null).length;
+      dassProgress.textContent = `${filled}/21 terisi`;
+      const now = new Date();
+      savedAt.textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    }
+
+    function renderQuestion(){
+      const q = dassItems[qIndex];
+      qTitle.textContent = `Pertanyaan ${q.id}`;
+      qText.textContent = q.text;
+
+      // set radio
+      document.querySelectorAll(`input[name="${radioName}"]`).forEach(r=>{
+        r.checked = (dassAnswers[qIndex] !== null && String(dassAnswers[qIndex]) === r.value);
+      });
+
+      renderChips();
+      const filled = dassAnswers.filter(v=> v !== null).length;
+      dassHint.textContent = (dassAnswers[qIndex] === null)
+        ? 'Pilih salah satu jawaban.'
+        : `Sudah terisi. Total terisi: ${filled}/21`;
+    }
+
+    // init chips + question
+    renderChips();
+    renderQuestion();
+
+    // save on change
+    document.querySelectorAll(`input[name="${radioName}"]`).forEach(r=>{
+      r.addEventListener('change', ()=>{
+        dassAnswers[qIndex] = Number(r.value);
+        updateDassProgress();
+        renderQuestion();
+      });
+    });
+
+    document.getElementById('btnDassPrev').addEventListener('click', ()=>{
+      qIndex = Math.max(0, qIndex - 1);
+      renderQuestion();
+    });
+    document.getElementById('btnDassNext').addEventListener('click', ()=>{
+      qIndex = Math.min(20, qIndex + 1);
+      renderQuestion();
+    });
+    document.getElementById('btnDassSkip').addEventListener('click', ()=>{
+      qIndex = Math.min(20, qIndex + 1);
+      renderQuestion();
+    });
+
+    document.getElementById('btnGoVoice').addEventListener('click', ()=> setScreen('voice'));
+    document.getElementById('btnGoReview').addEventListener('click', ()=>{
+      syncReview();
+      setScreen('review');
+    });
+
+    /* ==========
+      Voice Q + Recorder (MediaRecorder)
+    ========== */
+    const voiceQs = [
+      "Ceritakan hal yang paling mengganggu pikiran Anda akhir-akhir ini.",
+      "Apa yang paling Anda butuhkan dari lingkungan kampus untuk mendukung Anda?",
+      "Apa satu hal kecil yang bisa Anda lakukan minggu ini untuk membantu diri Anda?"
+    ];
+
+    let vIndex = 0;
+    const voiceProgress = document.getElementById('voiceProgress');
+    const voiceQ = document.getElementById('voiceQ');
+
+    // store recordings per question
+    const voiceData = voiceQs.map(()=>({ blob: null, url: null, text: "" }));
+
+    function renderVoiceQ(){
+      voiceProgress.textContent = `${vIndex+1}/${voiceQs.length}`;
+      voiceQ.textContent = voiceQs[vIndex];
+
+      // load existing
+      if (voiceData[vIndex].url){
+        setPlayback(voiceData[vIndex].url);
+      } else {
+        clearPlayback();
+      }
+
+      // load text (optional)
+      document.getElementById('voiceText').value = voiceData[vIndex].text || "";
+    }
+
+    document.getElementById('btnVoicePrev').addEventListener('click', ()=>{
+      saveVoiceText();
+      vIndex = Math.max(0, vIndex - 1);
+      renderVoiceQ();
+    });
+    document.getElementById('btnVoiceNext').addEventListener('click', ()=>{
+      saveVoiceText();
+      vIndex = Math.min(voiceQs.length - 1, vIndex + 1);
+      renderVoiceQ();
+    });
+    document.getElementById('btnVoiceSkip').addEventListener('click', ()=>{
+      saveVoiceText();
+      vIndex = Math.min(voiceQs.length - 1, vIndex + 1);
+      renderVoiceQ();
+    });
+
+    function saveVoiceText(){
+      voiceData[vIndex].text = document.getElementById('voiceText').value;
+    }
+
+    // Text toggle
+    const toggleText = document.getElementById('toggleText');
+    const textAreaWrap = document.getElementById('textAreaWrap');
+    toggleText.addEventListener('change', ()=>{
+      textAreaWrap.classList.toggle('active', toggleText.checked);
+    });
+
+    // Recorder elements
+    const btnRec = document.getElementById('btnRec');
+    const btnCheckMic = document.getElementById('btnCheckMic');
+    const recState = document.getElementById('recState');
+    const pulse = document.getElementById('pulse');
+    const timerEl = document.getElementById('timer');
+    const playbackRow = document.getElementById('playbackRow');
+    const audioEl = document.getElementById('audio');
+    const btnReRecord = document.getElementById('btnReRecord');
+    const btnDeleteAudio = document.getElementById('btnDeleteAudio');
+
+    let mediaRecorder = null;
+    let stream = null;
+    let chunks = [];
+    let isRecording = false;
+    let timer = null;
+    let seconds = 0;
+    const MAX_SECONDS = 120;
+
+    function formatTime(sec){
+      const m = String(Math.floor(sec/60)).padStart(2,'0');
+      const s = String(sec%60).padStart(2,'0');
+      return `${m}:${s}`;
+    }
+
+    function setRecordingUI(on){
+      isRecording = on;
+      btnRec.classList.toggle('recording', on);
+      btnRec.textContent = on ? '■ Stop' : '● Rekam';
+      recState.textContent = on ? 'Sedang merekam…' : 'Siap merekam';
+      pulse.classList.toggle('recording', on);
+    }
+
+    function resetTimer(){
+      seconds = 0;
+      timerEl.textContent = formatTime(seconds);
+      if (timer) clearInterval(timer);
+      timer = null;
+    }
+
+    function startTimer(){
+      resetTimer();
+      timer = setInterval(()=>{
+        seconds++;
+        timerEl.textContent = formatTime(seconds);
+        if (seconds >= MAX_SECONDS) stopRecording();
+      }, 1000);
+    }
+
+    function setPlayback(url){
+      playbackRow.classList.add('active');
+      audioEl.src = url;
+    }
+    function clearPlayback(){
+      playbackRow.classList.remove('active');
+      audioEl.removeAttribute('src');
+      audioEl.load();
+    }
+
+    async function ensureMic(){
+      try{
+        if (stream) return true;
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        return true;
+      } catch(err){
+        alert('Izin mikrofon belum tersedia. Silakan izinkan microphone atau gunakan jawaban teks (opsional).');
+        return false;
+      }
+    }
+
+    btnCheckMic.addEventListener('click', async ()=>{
+      const ok = await ensureMic();
+      if (ok) alert('Mikrofon siap digunakan.');
+    });
+
+    async function startRecording(){
+      const ok = await ensureMic();
+      if (!ok) return;
+
+      chunks = [];
+      try{
+        mediaRecorder = new MediaRecorder(stream);
+      } catch(e){
+        alert('Browser Anda tidak mendukung perekaman audio dengan MediaRecorder.');
+        return;
+      }
+
+      mediaRecorder.ondataavailable = (e)=>{
+        if (e.data && e.data.size > 0) chunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = ()=>{
+        const blob = new Blob(chunks, { type: 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+
+        // cleanup old
+        if (voiceData[vIndex].url) URL.revokeObjectURL(voiceData[vIndex].url);
+
+        voiceData[vIndex].blob = blob;
+        voiceData[vIndex].url = url;
+        setPlayback(url);
+      };
+
+      mediaRecorder.start();
+      setRecordingUI(true);
+      startTimer();
+    }
+
+    function stopRecording(){
+      if (!mediaRecorder) return;
+      try{ mediaRecorder.stop(); } catch(e){}
+      setRecordingUI(false);
+      if (timer) clearInterval(timer);
+      timer = null;
+    }
+
+    btnRec.addEventListener('click', async ()=>{
+      if (!isRecording) startRecording();
+      else stopRecording();
+    });
+
+    btnReRecord.addEventListener('click', async ()=>{
+      // “Rekam ulang” menghapus yang lama lalu mulai baru
+      if (voiceData[vIndex].url){
+        URL.revokeObjectURL(voiceData[vIndex].url);
+        voiceData[vIndex].url = null;
+        voiceData[vIndex].blob = null;
+        clearPlayback();
+      }
+      await startRecording();
+    });
+
+    btnDeleteAudio.addEventListener('click', ()=>{
+      const ok = confirm('Hapus rekaman untuk pertanyaan ini?');
+      if (!ok) return;
+      if (voiceData[vIndex].url){
+        URL.revokeObjectURL(voiceData[vIndex].url);
+      }
+      voiceData[vIndex].url = null;
+      voiceData[vIndex].blob = null;
+      clearPlayback();
+      resetTimer();
+    });
+
+    // init voice
+    renderVoiceQ();
+
+    /* ==========
+      Review
+    ========== */
+    const reviewVoiceList = document.getElementById('reviewVoiceList');
+    const reviewDassBadge = document.getElementById('reviewDassBadge');
+    const finalCheck = document.getElementById('finalCheck');
+    const btnSubmit = document.getElementById('btnSubmit');
+
+    function syncReview(){
+      // DASS completeness
+      const filled = dassAnswers.filter(v=> v !== null).length;
+      if (filled === 21){
+        reviewDassBadge.className = 'badge ok';
+        reviewDassBadge.textContent = 'Lengkap (21/21) ✅';
+      } else {
+        reviewDassBadge.className = 'badge warn';
+        reviewDassBadge.textContent = `Belum lengkap (${filled}/21) ⚠️`;
+      }
+
+      // Voice list
+      reviewVoiceList.innerHTML = '';
+      voiceQs.forEach((q, i)=>{
+        const hasAudio = !!voiceData[i].url;
+        const hasText = (voiceData[i].text || '').trim().length > 0;
+
+        const row = document.createElement('div');
+        row.className = 'item';
+
+        const left = document.createElement('div');
+        left.className = 'left';
+        left.innerHTML = `<b>Pertanyaan ${i+1}</b><span>${q}</span>`;
+
+        const right = document.createElement('div');
+        right.style.display = 'flex';
+        right.style.gap = '10px';
+        right.style.flexWrap = 'wrap';
+        right.style.justifyContent = 'flex-end';
+
+        const status = document.createElement('span');
+        status.className = 'badge ' + (hasAudio ? 'ok' : (hasText ? 'warn' : 'warn'));
+        status.textContent = hasAudio ? 'Rekaman tersedia ✅' : (hasText ? 'Teks saja (opsional) ⚠️' : 'Belum dijawab ⚠️');
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn btn-secondary mini';
+        btn.textContent = 'Isi / Ubah';
+        btn.addEventListener('click', ()=>{
+          vIndex = i;
+          renderVoiceQ();
+          setScreen('voice');
+        });
+
+        right.appendChild(status);
+        right.appendChild(btn);
+
+        row.appendChild(left);
+        row.appendChild(right);
+        reviewVoiceList.appendChild(row);
+      });
+
+      // submit gating (demo): require final check only
+      btnSubmit.disabled = !finalCheck.checked;
+    }
+
+    document.getElementById('btnEditDass').addEventListener('click', ()=> setScreen('dass'));
+    finalCheck.addEventListener('change', syncReview);
+
+    document.getElementById('btnSubmit').addEventListener('click', ()=>{
+      alert('Mockup: submit berhasil.');
+      setScreen('done');
+    });
+
+    document.getElementById('btnBackHome').addEventListener('click', ()=> setScreen('login'));
+    document.getElementById('btnDownload').addEventListener('click', ()=> alert('Mockup: download bukti partisipasi.'));
+
+    // update review button
+    document.getElementById('btnGoReview').addEventListener('click', syncReview);
+
+    // when moving to review via footer
+    document.getElementById('btnGoReview').addEventListener('click', ()=> {
+      saveVoiceText();
+      syncReview();
+    });
+
+    // When going review from voice footer too
+    document.getElementById('btnGoReview').addEventListener('click', ()=> setScreen('review'));
+
+    // Go to review button in voice footer
+    // (already attached above; ensure not double-binding)
+    // handle from DASS to voice is above
+
+    // Basic cleanup: stop recording if user navigates away
+    window.addEventListener('beforeunload', ()=>{
+      try{
+        if (isRecording) stopRecording();
+        if (stream) stream.getTracks().forEach(t=>t.stop());
+      }catch(e){}
+    });
+  </script>
+</body>
+</html>
