@@ -10,7 +10,7 @@ st.set_page_config(
 st.title("Mockup Portal Kesejahteraan Mahasiswa (ITB Minimal)")
 
 # Baca HTML dari file
-html_path = Path(__file__).parent / "index.html"
+html_path = Path(__file__).parent / "index2.html"
 html_content = html_path.read_text(encoding="utf-8")
 
 # Tampilkan HTML dalam iframe
